@@ -1,0 +1,48 @@
+{
+  "$id": "https://example.com/createPayment.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Validate create user request",
+  "description": "Create New User",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email address",
+      "format": "email"
+    },
+    "password": {
+      "type": "string",
+      "deprecationMessage": "Password bao gồm chữ cái viết hoa, viết thường, chữ số, ký tự đặc biệt",
+      "minLength": 8,
+      "error": "Password bao gồm chữ cái viết hoa, viết thường, chữ số, ký tự đặc biệt1"
+    },
+    "username": {
+      "type": "string",
+      "description": "full name of user",
+      "pattern": "^[A-Za-z0-9]+$",
+      "minLength": 4
+    },
+    "status": {
+      "type": "boolean",
+      "description": "status of user"
+    },
+    "listRole": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ADMIN",
+          "SALE",
+          "MARKETING",
+          "OPERATOR",
+          "USER"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "role of user"
+    }
+  },
+  "required": ["email","password","username"]
+}

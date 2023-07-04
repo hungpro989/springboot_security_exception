@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet author="user" id="add-index-table-user-column-username" runAlways="true">
+        <preConditions onFail="CONTINUE" onFailMessage="index idx_user_username already exists">
+            <not>
+                <indexExists indexName="idx_user_username" />
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_user_username" tableName="user">
+            <column name="username" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="add-index-table-user-column-password" runAlways="true">
+        <preConditions onFail="CONTINUE" onFailMessage="index idx_user_password already exists">
+            <not>
+                <indexExists indexName="idx_user_password" />
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_user_password" tableName="user">
+            <column name="password" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="add-index-table-user-column-email" runAlways="true">
+        <preConditions onFail="CONTINUE" onFailMessage="index idx_user_email already exists">
+            <not>
+                <indexExists indexName="idx_user_email" />
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_user_email" tableName="user">
+            <column name="email" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="add-index-table-user-column-status" runAlways="true">
+        <preConditions onFail="CONTINUE" onFailMessage="index idx_user_status already exists">
+            <not>
+                <indexExists indexName="idx_user_status" />
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_user_status" tableName="user">
+            <column name="status" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="add-index-table-user-column-created-at" runAlways="true">
+        <preConditions onFail="CONTINUE" onFailMessage="index idx_created_at already exists">
+            <not>
+                <indexExists indexName="idx_user_created_at" />
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_user_created_at" tableName="user">
+            <column name="created_at" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="add-index-table-user-column-updated-at" runAlways="true">
+        <preConditions onFail="CONTINUE" onFailMessage="index idx_updated_at already exists">
+            <not>
+                <indexExists indexName="idx_user_updated_at" />
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_user_updated_at" tableName="user">
+            <column name="updated_at" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
