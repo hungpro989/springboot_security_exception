@@ -40,7 +40,7 @@ public class UserController {
     Gson gson = new Gson();
     @PostMapping("/register")
     public ResponseEntity<?>registerUser(@RequestBody String registerRequestString){
-    //validate chuỗi string đầu vào registerRequestString với file validator/createUser.schema.json
+        //validate chuỗi string đầu vào registerRequestString với file validator/createUser.schema.json
         InputStream inputStream = UserController.class.getClassLoader().getResourceAsStream(Constant.JSON_REQ_CREATE_USER);
         CommonFunction.jsonValidate(inputStream,registerRequestString);
         //convert dữ liệu từ string thành RegisterRequest
