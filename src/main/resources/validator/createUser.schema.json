@@ -13,9 +13,8 @@
     },
     "password": {
       "type": "string",
-      "deprecationMessage": "Password bao gồm chữ cái viết hoa, viết thường, chữ số, ký tự đặc biệt",
-      "minLength": 8,
-      "error": "Password bao gồm chữ cái viết hoa, viết thường, chữ số, ký tự đặc biệt1"
+      "description": "",
+      "minLength": 8
     },
     "username": {
       "type": "string",
