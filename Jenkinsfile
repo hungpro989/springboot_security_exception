@@ -1,63 +1,52 @@
 pipeline {
-
     agent any
 
-    tools {
-        maven 'my-maven'
-    }
     environment {
-        MYSQL_ROOT_LOGIN = credentials('mysql-root')
+        MYSQL_ROOT_PASSWORD = credentials('mysql-root')
     }
+
     stages {
-
-        stage('Build with Maven') {
+        stage('Build') {
             steps {
-                sh 'mvn --version'
-                sh 'java -version'
-                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
-            }
-        }
-
-        stage('Packaging/Pushing imagae') {
-
-            steps {
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker build -t hungpro989/security .'
-                    sh 'docker push hungpro989/security'
+                script {
+                    sh 'mvn clean package'
                 }
             }
         }
 
-        stage('Deploy MySQL to DEV') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Deploying and cleaning'
-                sh 'docker image pull mysql:8.0'
-                sh 'docker network create dev || echo "this network exists"'
-                sh 'docker container stop koro-mysql || echo "this container does not exist" '
-                sh 'echo y | docker container prune '
-                sh 'docker volume rm koro-mysql-data || echo "no volume"'
-
-                sh "docker run --name koro-mysql --rm --network dev -v koro-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=securitydb  -d mysql:8.0"
-                sh 'sleep 20'
-                sh "docker exec -i koro-mysql mysql --user=root --password=${MYSQL_ROOT_LOGIN_PSW} < script"
+                script {
+                    def imageTag = "my-spring-app:${BUILD_NUMBER}"
+                    sh "docker build -t ${imageTag} ."
+                }
             }
         }
 
-        stage('Deploy Spring Boot to DEV') {
+        stage('Deploy MySQL') {
             steps {
-                echo 'Deploying and cleaning'
-                sh 'docker image pull hungpro989/koroapp'
-                sh 'docker container stop koroapp-springboot || echo "this container does not exist" '
-                sh 'docker network create dev || echo "this network exists"'
-                sh 'echo y | docker container prune '
+                script {
+                    sh 'docker network create dev || echo "Network exists"'
+                    sh 'docker container stop my-mysql || echo "Container does not exist"'
+                    sh 'echo y | docker container prune'
+                    sh 'docker volume rm mysql-data || echo "No volume"'
 
-                sh 'docker container run -d --rm --name koroapp-springboot -p 8081:8080 --network dev hungpro989/security'
+                    sh "docker run --name my-mysql --network dev -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} -e MYSQL_DATABASE=mydb -d mysql:8.0"
+                }
             }
         }
 
+        stage('Deploy Spring Boot App') {
+            steps {
+                script {
+                    def imageTag = "my-spring-app:${BUILD_NUMBER}"
+                    sh "docker container run -d --rm --name my-spring-app -p 8080:8080 --network dev ${imageTag}"
+                }
+            }
+        }
     }
+
     post {
-        // Clean after build
         always {
             cleanWs()
         }
